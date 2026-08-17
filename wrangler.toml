@@ -1,0 +1,29 @@
+# Wrangler configuration for Cloudflare Pages / Workers
+# Account ID intentionally set from user-provided value.
+# Do NOT commit API tokens. The CI workflow reads the token from GitHub Secrets.
+
+name = "spf-trades"
+account_id = "0347257424c38383c80a952b1f139085"
+project_name = "spf-trades"
+
+[observability]
+enabled = false
+head_sampling_rate = 1
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+persist = true
+invocation_logs = true
+
+[observability.traces]
+enabled = true
+persist = true
+head_sampling_rate = 1
+
+# Optional environment overrides (uncomment and edit if needed)
+#[env.staging.observability]
+#enabled = false
+
+#[env.production.observability]
+#enabled = false
