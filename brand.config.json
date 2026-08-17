@@ -28,7 +28,7 @@
         "oauth_scopes": ["trade", "account_manage"],
         "oauth_redirect_uri_staging": "https://staging.trade.seanpoolfunds.com",
         "oauth_redirect_uri_production": "https://trade.seanpoolfunds.com",
-        "oauth_app_id": ""
+        "oauth_app_id": "348DXYQ3byNvJeXhWU3aV"
     },
     "derivws": {
         "staging": "https://staging-api.derivws.com",
