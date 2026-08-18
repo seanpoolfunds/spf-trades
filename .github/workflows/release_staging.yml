@@ -23,6 +23,7 @@ jobs:
       - name: Build
         env:
           OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
+          NODE_OPTIONS: --openssl-legacy-provider
         run: npm run build:all
 
       - name: Deploy to Cloudflare Pages
