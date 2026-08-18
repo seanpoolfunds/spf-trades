@@ -1,21 +1,5 @@
-# Wrangler config for the frontend package (packages/trader)
-# Do NOT commit API tokens. GitHub Actions reads token from secrets.
-
 name = "spf-trades"
-account_id = "0347257424c38383c80a952b1f139085"
-project_name = "spf-trades"
+compatibility_date = "2026-08-17"
 
-[observability]
-enabled = false
-head_sampling_rate = 1
-
-[observability.logs]
-enabled = true
-head_sampling_rate = 1
-persist = true
-invocation_logs = true
-
-[observability.traces]
-enabled = true
-persist = true
-head_sampling_rate = 1
+[assets]
+directory = "./packages/core/dist"
