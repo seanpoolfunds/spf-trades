@@ -1,11 +1,9 @@
 const path = require('path');
 const { ALIASES, IS_RELEASE, MINIMIZERS, plugins, rules } = require('./constants');
 const { openChromeBasedOnPlatform } = require('./helpers');
-
 module.exports = function (env) {
     const base = env && env.base && env.base !== true ? `/${env.base}/` : '/';
     const sub_path = env && env.open && env.open !== true ? env.open : '';
-
     return {
         context: path.resolve(__dirname, '../src'),
         devServer: {
@@ -21,7 +19,6 @@ module.exports = function (env) {
             },
             host: 'localhost',
             server: 'https',
-
             port: 8443,
             historyApiFallback: true,
             hot: false,
@@ -30,7 +27,6 @@ module.exports = function (env) {
             },
         },
         devtool: IS_RELEASE ? 'source-map' : 'eval-cheap-module-source-map',
-
         entry: './index.tsx',
         mode: IS_RELEASE ? 'production' : 'development',
         module: {
@@ -40,26 +36,26 @@ module.exports = function (env) {
             alias: ALIASES,
             extensions: ['.js', '.jsx', '.ts', '.tsx'],
             symlinks: true,
+            fallback: {
+                util: false,
+            },
         },
         optimization: {
             minimize: IS_RELEASE,
             minimizer: MINIMIZERS,
             splitChunks: {
                 chunks: 'all',
-                minSize: 75000, // 75KB minimum chunk size for balanced granularity
-                minSizeReduction: 75000, // Match minSize for consistency
+                minSize: 75000,
+                minSizeReduction: 75000,
                 minChunks: 1,
-                maxSize: 1000000, // 1MB max chunks - fewer chunks for better performance
+                maxSize: 1000000,
                 maxAsyncRequests: 30,
                 maxInitialRequests: 30,
                 automaticNameDelimiter: '~',
-                enforceSizeThreshold: 1000000, // Allow enforced cache groups to be up to 1MB without splitting
+                enforceSizeThreshold: 1000000,
                 cacheGroups: {
-                    // Split vendor CSS into separate file
-                    // This ensures vendor CSS loads before app CSS in HTML
                     vendorStyles: {
                         test: module => {
-                            // Match CSS files from node_modules
                             return (
                                 module.type === 'css/mini-extract' && /[\\/]node_modules[\\/]/.test(module.identifier())
                             );
@@ -69,7 +65,6 @@ module.exports = function (env) {
                         priority: 30,
                         enforce: true,
                     },
-                    // React + MobX
                     framework: {
                         test: /[\\/]node_modules[\\/](react|react-dom|react-router|react-router-dom|scheduler|mobx|mobx-react-lite|mobx-utils)[\\/]/,
                         name: 'framework-vendor',
@@ -77,7 +72,6 @@ module.exports = function (env) {
                         enforce: true,
                         reuseExistingChunk: true,
                     },
-                    // UI + shared/translations
                     deriv: {
                         test: /[\\/]node_modules[\\/](@deriv-com[\\/]ui|@deriv[\\/]components|@deriv[\\/]shared|@deriv-com[\\/]translations)[\\/]/,
                         name: 'deriv-vendor',
@@ -85,7 +79,6 @@ module.exports = function (env) {
                         enforce: true,
                         reuseExistingChunk: true,
                     },
-                    // Split date/time libraries
                     datetime: {
                         test: /[\\/]node_modules[\\/](moment|dayjs)[\\/]/,
                         name: 'datetime-vendor',
@@ -95,7 +88,7 @@ module.exports = function (env) {
                     },
                     default: {
                         minChunks: 2,
-                        minSize: 75000, // Match global minSize for consistency
+                        minSize: 75000,
                         priority: -20,
                         reuseExistingChunk: true,
                     },
@@ -112,6 +105,10 @@ module.exports = function (env) {
             filename: 'js/core.[name].[contenthash].js',
             publicPath: base,
             path: path.resolve(__dirname, '../dist'),
+            environment: {
+                module: false,
+                dynamicImport: false,
+            },
         },
         plugins: plugins({
             base,
