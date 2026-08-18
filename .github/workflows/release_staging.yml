@@ -1,38 +1,35 @@
-name: Staging Release Workflow
+name: Release Staging
+
 on:
   push:
     branches:
-    - master
+      - master
 
 jobs:
-  build_test_and_publish:
-    name: Build, Test and Publish to Cloudflare Staging
+  build-and-deploy:
     runs-on: ubuntu-latest
-    environment: staging
-    permissions:
-      contents: read
-      actions: write
     steps:
-    - name: Checkout
-      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
-    - name: Setup Node
-      uses: "./.github/actions/setup_node"
-    - name: Install Dependencies
-      uses: "./.github/actions/npm_install_from_cache"
-    - name: Build
-      uses: "./.github/actions/build"
-      with:
-        NODE_ENV: staging
-        REF_NAME: ${{ github.ref_name }}
-        TRANSLATIONS_CDN_URL: ${{ vars.TRANSLATIONS_CDN_URL }}
-        OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
-    - name: Versioning
-      uses: "./.github/actions/versioning"
-      with:
-        RELEASE_TYPE: staging
-    - name: Publish to Cloudflare Pages Staging
-      uses: "./.github/actions/publish_to_pages_staging"
-      with:
-        CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        CLOUDFLARE_PROJECT_NAME: ${{ vars.CLOUDFLARE_PROJECT_NAME }}
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm run bootstrap
+
+      - name: Build
+        env:
+          OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
+        run: npm run build:all
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: ${{ vars.CLOUDFLARE_PROJECT_NAME }}
+          directory: packages/core/dist
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
