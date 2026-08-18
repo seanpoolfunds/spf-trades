@@ -28,6 +28,7 @@ jobs:
         env:
           OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
           NODE_OPTIONS: --openssl-legacy-provider
+          DERIV_APP_ID: 16929
         run: npm run build:all
 
       - name: List build output
