@@ -1,9 +1,11 @@
 const path = require('path');
 const { ALIASES, IS_RELEASE, MINIMIZERS, plugins, rules } = require('./constants');
 const { openChromeBasedOnPlatform } = require('./helpers');
+
 module.exports = function (env) {
     const base = env && env.base && env.base !== true ? `/${env.base}/` : '/';
     const sub_path = env && env.open && env.open !== true ? env.open : '';
+
     return {
         context: path.resolve(__dirname, '../src'),
         devServer: {
@@ -105,6 +107,7 @@ module.exports = function (env) {
             filename: 'js/core.[name].[contenthash].js',
             publicPath: base,
             path: path.resolve(__dirname, '../dist'),
+            libraryTarget: 'umd',   // ✅ FIX: makes the bundle work in browsers
             environment: {
                 module: false,
                 dynamicImport: false,
