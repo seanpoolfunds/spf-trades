@@ -30,6 +30,13 @@ jobs:
           NODE_OPTIONS: --openssl-legacy-provider
         run: npm run build:all
 
+      - name: List build output
+        run: |
+          echo "=== packages/core/dist ==="
+          ls -la packages/core/dist/ 2>/dev/null || echo "NOT FOUND"
+          echo "=== Finding index.html ==="
+          find . -name "index.html" -not -path "*/node_modules/*" -not -path "*/.git/*"
+
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
